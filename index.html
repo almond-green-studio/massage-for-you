@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Message for You, Right Now</title>
+  <style>
+    /* ── カラー変数 ───────────────────────────
+       ピンク系  : #fdf0f3 / #f9dce4 / #e8a0b0 / #c97085
+       ゴールド  : #c9a84c  (差し色・少量のみ)
+       白       : #ffffff
+    ─────────────────────────────────────── */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'Hiragino Kaku Gothic ProN', serif;
+      background: linear-gradient(160deg, #fefafb 0%, #fceef2 55%, #fdf5f7 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+    }
+
+    /* ── ヘッダー ── */
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 36px;
+    }
+
+    .gold-rule {
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #c9a84c 40%, #e8c97a, #c9a84c 60%, transparent);
+      margin: 10px 0;
+    }
+
+    h1 {
+      font-size: 0.78rem;
+      color: #c9a84c;
+      letter-spacing: 0.42em;
+      font-weight: normal;
+    }
+
+    /* ── サブタイトル ── */
+    .subtitle {
+      font-size: 0.9rem;
+      color: #c8a0a8;
+      letter-spacing: 0.18em;
+      margin-bottom: 40px;
+      font-weight: normal;
+      line-height: 1.9;
+      text-align: center;
+    }
+
+    /* ── カード ── */
+    .card-wrap {
+      perspective: 800px;
+      max-width: 520px;
+      width: 100%;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 4px;
+      border: 1px solid #f0dde3;
+      box-shadow:
+        0 2px 8px rgba(200, 140, 155, 0.08),
+        0 20px 60px rgba(200, 140, 155, 0.10);
+      padding: 56px 48px 48px;
+      width: 100%;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+
+      /* 初期状態は非表示 */
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(24px);
+      filter: blur(6px);
+      transition: none;
+    }
+
+    /* ボタンが押された後に付与するクラス */
+    .card.visible {
+      visibility: visible;
+      animation: floatIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes floatIn {
+      from {
+        opacity: 0;
+        transform: translateY(28px);
+        filter: blur(4px);
+      }
+      60% {
+        filter: blur(0px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0px);
+      }
+    }
+
+    /* ゴールドの上ライン */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #c9a84c 30%, #e8c97a 50%, #c9a84c 70%, transparent);
+      border-radius: 0 0 2px 2px;
+    }
+
+    /* ゴールドの下ライン */
+    .card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+      border-radius: 2px 2px 0 0;
+    }
+
+    .card.fade-out {
+      animation: none !important;
+      opacity: 0 !important;
+      transform: translateY(16px) !important;
+      filter: blur(4px) !important;
+      transition: opacity 0.38s ease, transform 0.38s ease, filter 0.38s ease;
+    }
+
+    /* ── タイトル ── */
+    .card-title {
+      font-size: 1.18rem;
+      font-weight: bold;
+      color: #a05a6a;
+      margin-bottom: 18px;
+      line-height: 1.7;
+      letter-spacing: 0.1em;
+    }
+
+    /* ゴールドの区切り線（少し長く） */
+    .title-divider {
+      width: 56px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #c9a84c 30%, #e8c97a 50%, #c9a84c 70%, transparent);
+      margin: 0 auto 24px;
+    }
+
+    /* ── 本文 ── */
+    .card-body {
+      font-size: 0.94rem;
+      color: #7a5565;
+      line-height: 2.2;
+      white-space: pre-line;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── ボタン ── */
+    .btn {
+      margin-top: 48px;
+      background: linear-gradient(160deg, #f2bcc8 0%, #dda0b0 100%);
+      color: #fff;
+      border: none;
+      border-radius: 2px;
+      padding: 15px 52px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      letter-spacing: 0.25em;
+      cursor: pointer;
+      box-shadow:
+        0 3px 16px rgba(200, 120, 140, 0.22),
+        0 0 0 1px rgba(201, 168, 76, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ボタン上部の光沢 */
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 50%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow:
+        0 10px 28px rgba(200, 120, 140, 0.28),
+        0 0 0 1px rgba(201, 168, 76, 0.55),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      opacity: 0.88;
+    }
+
+    /* ── カウンター（非表示） ── */
+    .counter {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="gold-rule"></div>
+    <h1>A MESSAGE FOR YOU, RIGHT NOW</h1>
+    <div class="gold-rule"></div>
+  </div>
+
+  <p class="subtitle">今のあなたへのメッセージを受け取りましょう</p>
+
+  <div class="card-wrap">
+    <div class="card" id="card">
+      <div class="card-title" id="msg-title"></div>
+      <div class="title-divider"></div>
+      <div class="card-body" id="msg-body"></div>
+    </div>
+  </div>
+
+  <button class="btn" onclick="showMessage()">メッセージを受け取る</button>
+  <div class="counter" id="counter"></div>
+
+  <script>
+    const messages = [
+      {
+        title: "「ふと」は、未来のサイン",
+        body: "何気ない瞬間に湧いた「ふと」した思いは、\n脳が高速で導き出した最適解です。\nあと回しにせず、その直感を信じてすぐに行動してみてください。\nそれが運命を変える入り口になります。"
+      },
+      {
+        title: "365日で、世界は変わる",
+        body: "脳が新しい自分を「当たり前」だと認識するまでには、\n365日の法則があります。\n本気で生きれば、1年後には想像もできないほど\nバババッと景色が変わっていますよ。"
+      },
+      {
+        title: "脳内スクリーンを飛び出せ",
+        body: "頭の中だけで失敗して諦める「脳内スクリーンの住人」に\nなるのは、もう終わりにしましょう。\n現実の土俵で一歩踏み出した人だけが、\n本物の「新しい地球」を生きられるのです。"
+      },
+      {
+        title: "休むことも、大切な勇気",
+        body: "頑張りすぎて心が追いつかなくなった時は、\n立ち止まってもいいのですよ。\n立ち止まった時にしか見えない景色が、\nあなたの未来を優しく導いてくれます。"
+      },
+      {
+        title: "「でもだって」を卒業する",
+        body: "やらない理由を並べて扉の前で立ち止まるのは、\nもう卒業しましょう。\nまだ歩いてもいない道を、自分の不安で閉ざしてしまうのは\n本当にもったいないことです。"
+      },
+      {
+        title: "出来事は、いつも「中立」",
+        body: "起きたことに「最悪」という色をつけているのは、\nあなた自身のフィルターです。\n見方を変えれば、どんな出来事も\n最高のチャンスに変わる魔法が使えます。"
+      },
+      {
+        title: "夢は、声に出して放つ",
+        body: "心に秘めるだけじゃなく、\n勇気を出して誰かに宣言してみてください。\n言葉というエネルギーが放たれた瞬間、\n世界中から必要な助けが集まり始めます。"
+      },
+      {
+        title: "幼い日のあなたを抱きしめて",
+        body: "人生がうまくいかない原因は、\n子どもの頃の小さな傷にあることがあります。\nまずは当時の自分の言い分を聞いて、\n思いきり抱きしめてあげてくださいね。"
+      },
+      {
+        title: "自分の「輝く場所」を知る",
+        body: "努力しても報われないなら、\nそこはあなたのフィールドではないのかもしれません。\n自分が自然と没頭でき、心から「好き」と思える場所でこそ、\n真の才能は光り出します。"
+      },
+      {
+        title: "眠れる可能性を呼び覚ます",
+        body: "あなたの中には、まだ見ぬ素晴らしい可能性が眠っています。\n新しい自分を選ぶ覚悟を決めた瞬間、\n人生のスピードは一気に加速し始めます。"
+      },
+      {
+        title: "違和感は、魂の防衛装置",
+        body: "人付き合いで最初に感じた「違和感」を無視しないでください。\nそれは潜在意識があなたを守るために出している、\nとても正確なセンサーなのです。"
+      },
+      {
+        title: "40代からが、人生の本番",
+        body: "これまでの経験という宝物を持って、\nもう一度人生を選び直しましょう。\n本音に気づき、自分らしく生き始めるのに、\n遅すぎるなんてことはありません。"
+      },
+      {
+        title: "立派な夢なんて、いらない",
+        body: "最初から高尚な目的を探す必要はありません。\n「お金持ちになりたい」「モテたい」\nそんな純粋な欲望から走るうちに、\n本当の目的が見つかります。"
+      },
+      {
+        title: "「今」という肉体を甘く見るな",
+        body: "夢を来世に持ち越してはいけません。\n今、この肉体を持っている瞬間にしか\n成し遂げられない魂の進化があることを\n忘れないでください。"
+      },
+      {
+        title: "90日の「刺客」に負けない",
+        body: "変わり始めの90日間は、\n必ず元に戻そうとする周囲の「刺客」が現れます。\nその孤独こそが変化の証拠。\n淡々と進み続けた人だけが、次のステージへ行けるのです。"
+      },
+      {
+        title: "未来から逆算して今を創る",
+        body: "過去の延長線上で未来を考えるのをやめましょう。\nなりたい未来の情報を先に受け取り、\nそこから逆算して今の行動を決めるのが、\n本来の人生創造です。"
+      },
+      {
+        title: "お金は、自由へのパスポート",
+        body: "お金を求めることを「いやらしい」と思わないでください。\nそれは選べる道を増やし、誰かを助け、\n自分の人生を豊かにするための\n健全なエネルギーです。"
+      },
+      {
+        title: "「なんとかなる」が道を開く",
+        body: "どんなに苦しい時も、「なんとかなる」と唱えてみてください。\nそう信じることで脳の回路が切り替わり、\n見えなかった解決策が見えるようになります。"
+      },
+      {
+        title: "成功の映像を、最後まで描く",
+        body: "多くの人は失敗の映像で思考を止めてしまいます。\nもし失敗したらどう乗り越えるか、\nその先の成功まで描き切る力こそが、\n人生を分けるのです。"
+      },
+      {
+        title: "大変な道は、選ばなくていい",
+        body: "「苦労しないと価値がない」という思い込みは捨てましょう。\n結果が同じなら、やさしい道、たのしい道を選んでいい。\nもっと順調に進んでいいのです。"
+      },
+      {
+        title: "過去の感情が未来を創る",
+        body: "嫌な過去を思い出して沈んでいる瞬間、\nその濁ったエネルギーで未来を創ってしまっています。\n今、この瞬間の感情を整えることが、\n一番の未来投資です。"
+      },
+      {
+        title: "選択の質が、スピードを決める",
+        body: "変化の時期は、小さな「選択の質」が\n人生のスピードに直結します。\n古い自分なら選ばない方を、\n勇気を持って選んでみてください。"
+      },
+      {
+        title: "大げさに喜んで、福を呼ぶ",
+        body: "小さな幸せに「やったー！」と大げさに喜んでみてください。\nその明るいエネルギーが、\nさらに大きな幸せを磁石のように引き寄せます。"
+      },
+      {
+        title: "失敗パターンを、分析で終わらせる",
+        body: "繰り返すトラブルは、感情ではなく「事実」を分析しましょう。\n睡眠時間や状況を客観的に見つめ直すことで、\n負のループは自然と解消されます。"
+      },
+      {
+        title: "顔を光らせ、幸運を招く",
+        body: "運気を上げたいなら、まずは顔を光らせ、ツヤを出すことから始めて。\n見た目を整え、清々しい気持ちでチャレンジすれば、\n良い流れは向こうからやってきます。"
+      },
+      {
+        title: "邪魔な重荷は、今すぐ手放す",
+        body: "あと一歩のところで足止めを食らっているなら、\nそれは不要なエネルギーの影響かもしれません。\n浄化して身軽になれば、\n人生は驚くほどスピーディーに動き出します。"
+      },
+      {
+        title: "未来を感じる力は、誰にでもある",
+        body: "それは特別な予言ではありません。\n自分の未来を感じ、問題を先延ばしにしない姿勢を持つことで、\n誰でも「新しい時代」を創る主役になれるのです。"
+      },
+      {
+        title: "自分への絶望を、癒す方法",
+        body: "もし未熟な自分を責めているなら、\n脳内スクリーンで相手に心からのお詫びと感謝を伝えてください。\n過去を許し、後悔を手放したとき、\n魂の傷は癒されます。"
+      },
+      {
+        title: "誠実な歩みが、未来を形づくる",
+        body: "一つひとつの誠実な積み重ねは、\n目に見えなくても着実に未来の形を作っています。\n自分を信じて進めば、\n必ず「当たり前の幸せ」が定着する日が来ます。"
+      },
+      {
+        title: "今日も笑顔で、いってらっしゃい",
+        body: "あなたの輝く未来が叶いますように、\n私はいつも応援しています。\nどんな時も笑顔を忘れず、自分を大切に、\n最高の一日をスタートさせましょう。"
+      }
+    ];
+
+    let lastIndex = -1;
+
+    let isFirstTime = true;
+
+    function showMessage() {
+      const card = document.getElementById('card');
+
+      // 次のメッセージを選ぶ（直前と同じ番号は避ける）
+      let index;
+      do {
+        index = Math.floor(Math.random() * messages.length);
+      } while (index === lastIndex && messages.length > 1);
+      lastIndex = index;
+
+      const msg = messages[index];
+
+      if (isFirstTime) {
+        // 初回：テキストをセットしてからふわっと浮かび上がる
+        isFirstTime = false;
+        document.getElementById('msg-title').textContent = msg.title;
+        document.getElementById('msg-body').textContent  = msg.body;
+
+        // visible クラスを付与してアニメーション開始
+        void card.offsetWidth;
+        card.classList.add('visible');
+
+      } else {
+        // 2回目以降：いったんフェードアウト → テキスト差し替え → 浮かび上がる
+        card.classList.add('fade-out');
+
+        setTimeout(() => {
+          document.getElementById('msg-title').textContent = msg.title;
+          document.getElementById('msg-body').textContent  = msg.body;
+
+          card.classList.remove('fade-out');
+          card.style.animation = 'none';
+          void card.offsetWidth;
+          card.style.animation = 'floatIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) both';
+        }, 420);
+      }
+    }
+  </script>
+
+</body>
+</html>
