@@ -95,7 +95,7 @@
     /* ボタンが押された後に付与するクラス */
     .card.visible {
       visibility: visible;
-      animation: floatIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation: floatIn 3.6s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
     @keyframes floatIn {
@@ -145,7 +145,7 @@
       opacity: 0 !important;
       transform: translateY(16px) !important;
       filter: blur(4px) !important;
-      transition: opacity 0.38s ease, transform 0.38s ease, filter 0.38s ease;
+      transition: opacity 1.1s ease, transform 1.1s ease, filter 1.1s ease;
     }
 
     /* ── タイトル ── */
@@ -219,9 +219,43 @@
       opacity: 0.88;
     }
 
+    /* ── モバイル改行 ── */
+    .mobile-br {
+      display: none;
+    }
+
     /* ── カウンター（非表示） ── */
     .counter {
       display: none;
+    }
+
+    /* ── スマホ対応 ── */
+    @media (max-width: 600px) {
+      body {
+        padding: 32px 24px;
+      }
+
+      .mobile-br {
+        display: inline;
+      }
+
+      h1 {
+        text-align: center;
+        line-height: 1.9;
+      }
+
+      .subtitle {
+        padding: 0 8px;
+        line-height: 2.2;
+      }
+
+      .card {
+        padding: 48px 28px 40px;
+      }
+
+      .card-body {
+        font-size: 1.08rem;
+      }
     }
   </style>
 </head>
@@ -229,11 +263,11 @@
 
   <div class="header">
     <div class="gold-rule"></div>
-    <h1>A MESSAGE FOR YOU, RIGHT NOW</h1>
+    <h1>A MESSAGE FOR YOU,<br class="mobile-br"> RIGHT NOW</h1>
     <div class="gold-rule"></div>
   </div>
 
-  <p class="subtitle">今のあなたへのメッセージを受け取りましょう</p>
+  <p class="subtitle">今のあなたへメッセージを<br class="mobile-br">受け取りましょう</p>
 
   <div class="card-wrap">
     <div class="card" id="card">
@@ -407,8 +441,8 @@
           card.classList.remove('fade-out');
           card.style.animation = 'none';
           void card.offsetWidth;
-          card.style.animation = 'floatIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) both';
-        }, 420);
+          card.style.animation = 'floatIn 3.6s cubic-bezier(0.16, 1, 0.3, 1) both';
+        }, 1200);
       }
     }
   </script>
