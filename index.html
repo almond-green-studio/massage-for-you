@@ -232,30 +232,55 @@
     /* ── スマホ対応 ── */
     @media (max-width: 600px) {
       body {
-        padding: 32px 24px;
+        padding: 16px 24px;
+        justify-content: center;
       }
 
       .mobile-br {
         display: inline;
       }
 
+      .header {
+        margin-bottom: 16px;
+      }
+
+      .gold-rule {
+        margin: 6px 0;
+      }
+
       h1 {
         text-align: center;
-        line-height: 1.9;
+        line-height: 1.7;
       }
 
       .subtitle {
         padding: 0 8px;
-        line-height: 2.2;
+        line-height: 1.8;
+        margin-bottom: 20px;
       }
 
       .card {
-        padding: 48px 28px 40px;
+        padding: 28px 24px 24px;
+        min-height: unset;
+      }
+
+      .card-title {
+        margin-bottom: 12px;
+      }
+
+      .title-divider {
+        margin-bottom: 16px;
       }
 
       .card-body {
         font-size: 1.1rem;
         white-space: normal;
+        line-height: 1.9;
+      }
+
+      .btn {
+        margin-top: 24px;
+        padding: 13px 44px;
       }
     }
   </style>
